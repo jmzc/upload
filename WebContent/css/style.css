@@ -1,0 +1,56 @@
+
+body 
+{
+	font: .8em/150%  Arial, Helvetica, sans-serif;
+	margin: 30px auto;
+	width: 560px;
+	word-wrap: break-word
+}
+
+.upload-container
+{
+	background: #e6eef2;
+	border: solid 1px #999;
+	padding: 10px;
+}
+
+.submit-container
+{
+
+	margin: 20px 0px 0px 0px;
+	
+}
+
+.submit
+{
+
+	float: left;
+	line-height: 24px;
+		
+}
+
+.result
+{
+
+	float: left;
+	margin: 0px 0px 0px 20px;
+	witdh: 24px;
+	height: 24px;
+	line-height: 24px;
+	
+	
+}
+
+.message
+{
+
+	float: left;
+	margin: 0px 0px 0px 20px;
+	height: 24px;
+	color:red;
+	font-weight:bold;
+	line-height: 24px;
+	
+	
+}
+

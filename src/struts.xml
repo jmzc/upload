@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC 
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" 
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    
+    <constant name="struts.custom.i18n.resources" value="global" />
+    
+    <!-- <constant name="struts.multipart.maxSize" value="1000000" /> -->
+    
+    <!-- bytes  -->
+    <!-- <constant name="struts.multipart.maxSize" value="1048576" /> -->
+    
+    <package name="action" namespace="" extends="struts-default">
+    <action name="doupload" class="com.olsms.action.UploadAction">
+
+		  
+		  
+		<!-- The file upload interceptor also does the validation and adds errors, 
+			these error messages are stored in the struts-messsages.properties file. 
+			The values of the messages can be overridden by providing the text for the following keys:
+				struts.messages.error.uploading – error when uploading of file fails
+				struts.messages.error.file.too.large – error occurs when file size is large
+				struts.messages.error.content.type.not.allowed – when the content type is not allowed 
+	  -->
+		
+        <interceptor-ref name="fileUpload">
+            <!-- <param name="maximumSize">1048576</param> --> 
+            
+            <!--  text/plain -->
+            <!-- image/jpeg,image/gif -->
+             <param name="allowedTypes">text/plain,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</param>
+        </interceptor-ref> 
+        
+        <interceptor-ref name="basicStack"/>
+      	<interceptor-ref name="validation"/>
+        <interceptor-ref name="workflow"/>
+
+         
+
+        <result name="success">sucess.jsp</result>
+        <result name="input">input.jsp</result>
+        <result name="error">error.jsp</result>
+    </action>
+    </package>
+</struts>

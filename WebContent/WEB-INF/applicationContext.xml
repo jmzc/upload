@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-2.0.xsd 
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+
+	<!-- enables interpretation of the @PersistenceUnit/@PersistenceContext  annotations providing convenient access to EntityManagerFactory/EntityManager -->
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<!-- enables interpretation of the @Required annotation to ensure that dependency injection actually occurs -->
+	<bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+	<!-- uses the persistence unit defined in the META-INF/persistence.xml JPA configuration file -->
+
+	<!-- For PostGreSQL DB -->
+	<bean class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean" id="entityManagerFactory">
+		<property name="persistenceUnitName" value="jpa-postgresql"/>
+	</bean>
+	<!-- transaction manager for use with a single JPA EntityManagerFactory  for transactional data access to a single datasource -->
+	<!-- For PostGreSQL DB -->
+	<bean class="org.springframework.orm.jpa.JpaTransactionManager" id="jpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	<!-- enables interpretation of the @Transactional annotation for declerative  transaction managment using the specified JpaTransactionManager -->
+
+	<!-- For PostGreSQL DB -->
+	<tx:annotation-driven proxy-target-class="false" transaction-manager="jpaTransactionManager" />
+	
+	<!-- enables interpretation of the @Configurable annotation for domain object dependency injection -->
+	<aop:spring-configured />
+
+
+</beans>
