@@ -12,13 +12,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Transactional(propagation=Propagation.MANDATORY)
+
 public class ScheduleC2ADAOImplJpa extends JpaDaoSupport implements ScheduleC2ADAO
 {
 
 	
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public void insertScheduleC2A(ScheduleC2A scheduleC2A) 
 	{
 		

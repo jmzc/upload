@@ -13,9 +13,12 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.olsms.persistence.ScheduleC2A;
 import com.olsms.persistence.util.Build;
+import com.olsms.service.ScheduleC2AManagementService;
 import com.opensymphony.xwork2.ActionSupport;
 
 
@@ -45,9 +48,9 @@ public class UploadAction extends ActionSupport
 {
 
 	// 
-    //static ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/WEB-INF/applicationContext.xml"});
+    static ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"applicationContext.xml"});
 	
-	
+	static ScheduleC2AManagementService service = (ScheduleC2AManagementService)context.getBean("scheduleC2AManagementService");
 	
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	/**
@@ -217,15 +220,13 @@ public class UploadAction extends ActionSupport
 	                {
 	                	ScheduleC2A scheduleC2A = record.getScheduleC2A();
 	                	
-	                	Report report = new Report();
-		        		report.setRow(row.getRowNum());
-		        		report.setMessage("Registro con datos no válidos");
-		        		
-		        		this.addReport(report);
+	                	service.loadScheduleC2A(scheduleC2A);
+
 	                	
 	                }
 	                catch(Exception e)
 	                {
+	                	logger.error("[EXCEPTION]", e);
 	                	
 	                	Report report = new Report();
 		        		report.setRow(row.getRowNum());
@@ -240,7 +241,21 @@ public class UploadAction extends ActionSupport
 	            }
 	            
 	            if (this.reports != null && reports.size() > 0)
+	            {
+	            	if (sheet.getLastRowNum() + 1 == this.reports.size())
+	            	{
+	            		 this.reports = null;
+	            		 
+	            		 addFieldError("fichero","Ningún registro insertado [DATOS NO VALIDOS]");
+	            	}
+	            	else
+	            	{
+	            		
+	            	}
+	            	
 	            	return ERROR;
+	            }
+
 	            else
 	            	return SUCCESS;
 	            

@@ -41,8 +41,7 @@
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 	 
-	<bean id="scheduleC2AManagementService" 
-    	class="com.olsms.service.ScheduleC2AManagementServiceImpl">
+	<bean id="scheduleC2AManagementService" class="com.olsms.service.ScheduleC2AManagementServiceImpl">
     	<property name="scheduleC2ADAO" ref="scheduleC2ADAO"/>
     </bean>
 

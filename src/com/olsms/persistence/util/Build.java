@@ -2,6 +2,7 @@ package com.olsms.persistence.util;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 
 import com.olsms.persistence.ScheduleC2A;
 
@@ -10,6 +11,8 @@ public class Build
 
 	
 	private Logger logger = Logger.getLogger(this.getClass().getName());
+	
+	static DataFormatter formatter =  new DataFormatter();
 	
 	
 	private ScheduleC2A scheduleC2A = null;
@@ -48,27 +51,26 @@ public class Build
 
 	 */
 	
-	public void setCell(Cell cell)
+	public void setCell(Cell cell) throws Exception
 	{
-		switch (cell.getCellType()) 
-        {
-			case Cell.CELL_TYPE_NUMERIC:
-				logger.info("Adding [" + cell.getColumnIndex() + "][" + cell.getNumericCellValue() + "]");
-				break;
-			case Cell.CELL_TYPE_STRING:
-				logger.info("Adding [" + cell.getColumnIndex() + "][" + cell.getStringCellValue() + "]");
-				break;
-        }
-        
 		
+				
+		String value = this.format(cell);
+		logger.info("Adding [" + cell.getColumnIndex() + "][" + value + "]");
+
+		
+		
+		// MAP
         switch (cell.getColumnIndex()) 
         {
-                    
+          
+        // CLIENTE_PHONE
         case 0: 
-        	this.scheduleC2A.setClientPhone(cell.getStringCellValue()); 
+        	this.scheduleC2A.setClientPhone(value); 
         	break;
+        // CLIENTE_NAME
         case 1: 
-        	this.scheduleC2A.setClientName(cell.getStringCellValue()); 
+        	this.scheduleC2A.setClientName(value); 
         	break;
              
         
@@ -79,6 +81,28 @@ public class Build
         
 		
 	}
+	
+	
+	private String format(Cell cell)
+	{
+		
+		return formatter.formatCellValue(cell);
+		
+		/*
+		switch (cell.getCellType()) 
+		{
+        case Cell.CELL_TYPE_STRING:
+            r = cell.getRichStringCellValue().getString();
+            break;
+        case Cell.CELL_TYPE_NUMERIC:
+        	r = NumberFormat.getInstance().format(cell.getNumericCellValue());
+        	break;	
+		}
+		*/	
+	
+	}
+	
+	
 
 	public ScheduleC2A getScheduleC2A()
 	{
