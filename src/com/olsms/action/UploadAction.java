@@ -18,6 +18,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.olsms.persistence.ScheduleC2A;
 import com.olsms.persistence.util.Build;
+import com.olsms.persistence.util.exception.FieldException;
 import com.olsms.service.ScheduleC2AManagementService;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -206,23 +207,33 @@ public class UploadAction extends ActionSupport
 	
 	                Build record = new Build(new ScheduleC2A());
 	                
+	                try
+	                {
+	                	
 	                while (cellIterator.hasNext()) 
 	                {
 	                    Cell cell = cellIterator.next();
-	                    
+	   
 	                    record.setCell(cell);
 
-	                    
 	                }
 
 	                // PERSIST
-	                try
+	          
+	                ScheduleC2A scheduleC2A = record.getScheduleC2A();
+	                service.loadScheduleC2A(scheduleC2A);
+	
+	                	
+	                }
+	                catch(FieldException e)
 	                {
-	                	ScheduleC2A scheduleC2A = record.getScheduleC2A();
+	                	logger.error("[FIELD EXCEPTION][" + e.getMessage() + "]");
 	                	
-	                	service.loadScheduleC2A(scheduleC2A);
-	                	
-	                	
+	                	Report report = new Report();
+		        		report.setRow(row.getRowNum() + 1);
+		        		report.setMessage(e.getMessage());
+		        		
+		        		this.addReport(report);
 	                	
 	                }
 	                catch(Exception e)
@@ -252,7 +263,7 @@ public class UploadAction extends ActionSupport
 	            	}
 	            	else
 	            	{
-	            		addFieldError("fichero","Algunos registros insertado [DATOS NO VALIDOS]");
+	            		addFieldError("fichero","Algunos registros no insertados [DATOS NO VALIDOS]");
 	            	}
 	            	
 	            	

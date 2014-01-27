@@ -1,10 +1,14 @@
 package com.olsms.persistence.util;
 
+import java.util.Calendar;
+
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 
 import com.olsms.persistence.ScheduleC2A;
+import com.olsms.persistence.ScheduleC2A.ScheduleC2AState;
+import com.olsms.persistence.util.exception.FieldException;
 
 public class Build 
 {
@@ -22,6 +26,9 @@ public class Build
 	{
 		super();
 		this.scheduleC2A = scheduleC2A;
+		
+		this.scheduleC2A.setCreationDate(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
+		this.scheduleC2A.setState(ScheduleC2AState.PENDING_CALL);
 	}
 
 	/*
@@ -57,7 +64,8 @@ public class Build
 				
 		String value = format(cell);
 		logger.info("Adding [" + cell.getColumnIndex() + "][" + value + "]");
-
+		
+		
 		
 		
 		// MAP
@@ -66,6 +74,8 @@ public class Build
           
         // CLIENTE_PHONE
         case 0: 
+        	if (value == null || value.length() != 9)
+        		throw new FieldException("Telefono de cliente no valido");
         	this.scheduleC2A.setClientPhone(value); 
         	break;
         // CLIENTE_NAME
