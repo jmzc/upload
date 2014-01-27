@@ -1,11 +1,14 @@
 
 body 
 {
-	font: .8em/150%  Arial, Helvetica, sans-serif;
+	font-family: arial, helvetica;	
+	font-weight: normal;	
+	font-size: 13px;
 	margin: 30px auto;
 	width: 560px;
 	word-wrap: break-word
 }
+
 
 .upload-container
 {

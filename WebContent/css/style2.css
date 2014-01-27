@@ -1,0 +1,23 @@
+
+body 
+{
+	font-family: arial, helvetica;	
+	font-weight: normal;
+	font-size: 13px;	
+	width: 100%;
+	word-wrap: break-word;
+	background-color: #e6eef2;
+}
+
+
+.report
+{
+	
+	background-color: #e6eef2;
+	word-wrap: break-word;
+	margin: 20px 0px 0px 0px;
+	
+	
+}
+
+

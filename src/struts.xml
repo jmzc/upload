@@ -39,7 +39,7 @@
          
 
         <result name="success">sucess.jsp</result>
-        <result name="input">input.jsp</result>
+        <result name="input">error.jsp</result>
         <result name="error">error.jsp</result>
     </action>
     </package>

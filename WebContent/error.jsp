@@ -1,6 +1,8 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+
 
 <!-- 
 <c:set var="abc"><c:out value="${xyz}" /></c:set>
@@ -26,35 +28,56 @@
 <c:set var="fielderror" scope="request"><s:fielderror/></c:set>
  -->
 
+<c:choose>
+      <c:when test="${!empty fieldErrors}">
+      <c:forEach items="${fieldErrors}" var="item" varStatus="status">
+  			<c:set var="message" value="${status.first ? '' : message} ${item}" />
+	</c:forEach>
+	 </c:when>
+      <c:otherwise>
+		<c:forEach items="${actionErrors}" var="item" varStatus="status">
+  			<c:set var="message" value="${status.first ? '' : message} ${item}" />
+		</c:forEach>
+      </c:otherwise>
+</c:choose>
+      
  
-<c:forEach items="${actionErrors}" var="item" varStatus="status">
-  <c:set var="actionerror" value="${status.first ? '' : actionerror} ${item}" />
-</c:forEach>
+ 
 
-<c:forEach items="${fieldErrors}" var="item" varStatus="status">
-  <c:set var="fielderror" value="${status.first ? '' : fielderror} ${item}" />
-</c:forEach>
- 
-
- 
- 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; UTF-8"/>
+<link href="css/style2.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript">
 
-var actionerror = '<c:out value="${actionerror}"/>';
-var fielderror = '<c:out value="${fielderror}"/>';
 
-var message = actionerror + ' ' + fielderror;
+var message = '<c:out value="${message}"/>';
 
 parent.result(1, message);
 
 </script>
 </head>
-<body>
-<s:actionerror/>
-<s:fielderror/>
+<c:if test="${not empty reports}"> 
+<div id="report" class="report">
+<table border="0" width="100%" >
+  <thead>
+    <tr>
+      <th width="100%" colspan="2">Resultados</th>
+     
+    </tr>
+  </thead>
+  <tbody>
+  	<s:iterator value="reports">
+  		<tr>
+      		<td width="20%">Fila <s:property value="row"/></td>
+      		<td><s:property value="message"/></td>
+    	</tr>
+	</s:iterator>
+  </tbody>
+</table>
+</div>
+
 </body>
+</c:if>
+
 </html>

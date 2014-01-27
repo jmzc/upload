@@ -1,14 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <html>
 <head>
-<title>Showcase - fileupload - multiple fileupload using List</title>
-<link href="css/style.css" rel="stylesheet" type="text/css"/>
-<script src="js/jquery-2.0.3.min.js"></script>
+<link href="css/style1.css" rel="stylesheet" type="text/css"/>
+<script src="js/jquery-1.8.2.min.js"></script>
 <script src="js/spin.js"></script>
 <script src="js/jquery.spin.js"></script>
+
 <script>
 
+function cleaner() 
+{
+	
+	$('#result').html("");
+	$('#message').html("");
+	
+	
+	// TODO
+		
+
+}
+
+
+//http://css-tricks.com/snippets/jquery/fit-iframe-to-content/
+$(function()
+{
+		    
+	var frame = $('#upload_target');
+
+	frame.load(function() 
+	{ 
+		
+		if (this.contentWindow.document.body.offsetHeight > 0)
+	 		this.style.height = (this.contentWindow.document.body.offsetHeight + 20) + 'px';
+	 	else
+	 		this.style.height = 0 + 'px';
+	
+	});
+
+	
+		    
+});
+
+	 
+		 
 function result(n,message)
 {
 
@@ -17,6 +53,7 @@ function result(n,message)
 		$('#result').html('<img src="image/ok.png"/>');
 	else
 	{
+				
 		// The text() method entity-escapes any HTML that is passed into it.
 		$('#result').html('<img src="image/error.png" title="' + message + '"/>');
 		$('#message').html( message);
@@ -40,22 +77,16 @@ function execute()
 		 alert('Debe indicar un fichero');
 		 return;
 	 }
-	 
 
 	  $('#result').spin('small');
+	 
 	  $('#uploadfrm').submit();
 	 
 
 }
 
-function cleaner() 
-{
-	
-	$('#result').html("");
-	$('#message').html("");
 
-}
- 
+
 </script>
 </head>
 <body>
@@ -78,8 +109,10 @@ function cleaner()
 	 </form>
 	 
 
-	<iframe id="upload_target" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>                 
-</div>
+	<!-- <iframe id="upload_target" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>  -->
+	<iframe id="upload_target" name="upload_target" allowTransparency="true" marginheight="0" marginwidth="0"  scrolling="yes" frameborder="0" style="width:100%;height:0px;border:0px solid #000;"></iframe>               
+</div> 
+
 
 </body>
 </html>

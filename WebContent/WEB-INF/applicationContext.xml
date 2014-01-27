@@ -36,5 +36,14 @@
 	<!-- enables interpretation of the @Configurable annotation for domain object dependency injection -->
 	<aop:spring-configured />
 
+	<bean id="scheduleC2ADAO" 
+		class="com.olsms.persistence.ScheduleC2ADAOImplJpa">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	 
+	<bean id="scheduleC2AManagementService" 
+    	class="com.olsms.service.ScheduleC2AManagementServiceImpl">
+    	<property name="scheduleC2ADAO" ref="scheduleC2ADAO"/>
+    </bean>
 
 </beans>

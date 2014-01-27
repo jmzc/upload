@@ -3,8 +3,10 @@ package com.olsms.action;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -12,6 +14,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.olsms.persistence.ScheduleC2A;
+import com.olsms.persistence.util.Build;
 import com.opensymphony.xwork2.ActionSupport;
 
 
@@ -39,6 +43,12 @@ import com.opensymphony.xwork2.ActionSupport;
 
 public class UploadAction extends ActionSupport 
 {
+
+	// 
+    //static ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/WEB-INF/applicationContext.xml"});
+	
+	
+	
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	/**
 	 * 
@@ -103,20 +113,31 @@ public class UploadAction extends ActionSupport
 		this.filename = filename;
 	}
 
+
+	private List<Report> reports;
+
+	public List<Report> getReports() 
+	{
+		return reports;
+	}
+
+	public void setReports(List<Report> reports) 
+	{
+		this.reports = reports;
+	}
 	
-	
-	/*
-	 * Is there a way to bind my CSV file to a list of Javabeans?
-	 * ColumnPositionMappingStrategy strat = new ColumnPositionMappingStrategy();
-		strat.setType(YourOrderBean.class);
-		String[] columns = new String[] {"name", "orderNumber", "id"}; // the fields to bind do in your JavaBean
-		strat.setColumnMapping(columns);
-		CsvToBean csv = new CsvToBean();
-		List list = csv.parse(strat, yourReader);(non-Javadoc)
+	private void addReport(Report report)
+	{
 		
-	 * 
-	 */
+		if (reports == null)
+			reports = new ArrayList<Report>();
+		
+		reports.add(report);
+		
+	}
 	
+	
+
 	/* workflow */
 	public String execute() 
 	{
@@ -136,6 +157,7 @@ public class UploadAction extends ActionSupport
 			else
 			{
 				
+				
 				return ERROR ;
 			}
 			
@@ -151,6 +173,143 @@ public class UploadAction extends ActionSupport
 		
 	}
 	
+
+		
+	//http://viralpatel.net/blogs/java-read-write-excel-file-apache-poi/
+	//http://stackoverflow.com/questions/5898497/java-microsoft-excel-api
+	
+	private String xsl(File f)
+	{
+
+		FileInputStream fis = null;
+		  try
+	        {
+	            fis = new FileInputStream(f);
+	 
+	            //Create Workbook instance holding reference to .xlsx fis
+	            XSSFWorkbook workbook = new XSSFWorkbook(fis);
+	 
+	            //Get first/desired sheet from the workbook
+	            XSSFSheet sheet = workbook.getSheetAt(0);
+	 
+	            //Iterate through each rows one by one
+	            Iterator<Row> rowIterator = sheet.iterator();
+	            while (rowIterator.hasNext()) 
+	            {	            	
+	                Row row = rowIterator.next();
+	                //For each row, iterate through all the columns
+	                Iterator<Cell> cellIterator = row.iterator();
+	                         
+	
+	                Build record = new Build(new ScheduleC2A());
+	                
+	                while (cellIterator.hasNext()) 
+	                {
+	                    Cell cell = cellIterator.next();
+	                    
+	                    record.setCell(cell);
+
+	                    
+	                }
+
+	                // PERSIST
+	                try
+	                {
+	                	ScheduleC2A scheduleC2A = record.getScheduleC2A();
+	                	
+	                	Report report = new Report();
+		        		report.setRow(row.getRowNum());
+		        		report.setMessage("Registro con datos no válidos");
+		        		
+		        		this.addReport(report);
+	                	
+	                }
+	                catch(Exception e)
+	                {
+	                	
+	                	Report report = new Report();
+		        		report.setRow(row.getRowNum());
+		        		report.setMessage("Registro no insertado [DATOS NO VALIDOS]");
+		        		
+		        		this.addReport(report);
+	                	
+	                }
+	                
+	               
+	               
+	            }
+	            
+	            if (this.reports != null && reports.size() > 0)
+	            	return ERROR;
+	            else
+	            	return SUCCESS;
+	            
+	        } 
+		  	catch( org.apache.poi.POIXMLException e)
+		  	{
+		  		if (e.getCause() instanceof org.apache.poi.openxml4j.exceptions.InvalidFormatException)
+		  			 addFieldError("fichero","Formato no soportado. Formatos admitidos [XSLX]");
+					
+					return ERROR ;
+		  	}
+	        catch (Exception e) 
+	        {
+	            	            
+	            logger.error("Exception", e);
+				
+				return ERROR ;
+	        }
+		  finally
+		  {
+			  try
+			  {
+				  if (fis != null)
+				  {
+					  fis.close();
+				  }
+			  }
+			  catch(IOException e)
+			{
+					logger.error("Exception when closing reader object", e);
+			}
+		  }
+	
+	}
+	
+	
+	public void validate()
+	{
+		
+		/*
+		 W/A
+			http://stackoverflow.com/questions/11310016/why-does-the-error-file-too-large-is-not-being-showed-correctly-in-the-jsp
+		*/
+	    Collection<?> tmp = getActionErrors();
+
+	    for (Object o : tmp) 
+	    {
+	        if (o.toString().contains("the request was rejected because its size")) 
+	        {
+	                addFieldError("fichero","El tamaño del fichero excede del permitido (1MB)");
+	                break;
+	        }
+	    }
+	    
+	   
+	}
+	
+	
+	/*
+	 * Is there a way to bind my CSV file to a list of Javabeans?
+	 * ColumnPositionMappingStrategy strat = new ColumnPositionMappingStrategy();
+		strat.setType(YourOrderBean.class);
+		String[] columns = new String[] {"name", "orderNumber", "id"}; // the fields to bind do in your JavaBean
+		strat.setColumnMapping(columns);
+		CsvToBean csv = new CsvToBean();
+		List list = csv.parse(strat, yourReader);(non-Javadoc)
+		
+	 * 
+	 */
 	/*
 	private String csv(File f)
 	{
@@ -209,100 +368,5 @@ public class UploadAction extends ActionSupport
 		
 	}
 	*/
-		
-	//http://viralpatel.net/blogs/java-read-write-excel-file-apache-poi/
-	//http://stackoverflow.com/questions/5898497/java-microsoft-excel-api
-	
-	private String xsl(File f)
-	{
-
-		FileInputStream fis = null;
-		  try
-	        {
-	            fis = new FileInputStream(f);
-	 
-	            //Create Workbook instance holding reference to .xlsx fis
-	            XSSFWorkbook workbook = new XSSFWorkbook(fis);
-	 
-	            //Get first/desired sheet from the workbook
-	            XSSFSheet sheet = workbook.getSheetAt(0);
-	 
-	            //Iterate through each rows one by one
-	            Iterator<Row> rowIterator = sheet.iterator();
-	            while (rowIterator.hasNext()) 
-	            {
-	                Row row = rowIterator.next();
-	                //For each row, iterate through all the columns
-	                Iterator<Cell> cellIterator = row.iterator();
-	
-	                while (cellIterator.hasNext()) 
-	                {
-	                    Cell cell = cellIterator.next();
-	                    //Check the cell type and format accordingly
-	                    switch (cell.getCellType()) 
-	                    {
-	                    
-	                        case Cell.CELL_TYPE_NUMERIC:
-	                            logger.info(cell.getNumericCellValue() + "t");
-	                            break;
-	                        case Cell.CELL_TYPE_STRING:
-	                        	logger.info(cell.getStringCellValue() + "t");
-	                            break;
-	                    }
-	                }
-	               
-	            }
-	            
-	            return SUCCESS;
-	            
-	        } 
-		  	catch( org.apache.poi.POIXMLException e)
-		  	{
-		  		if (e.getCause() instanceof org.apache.poi.openxml4j.exceptions.InvalidFormatException)
-		  			 addFieldError("fichero","Formato no soportado. Formatos admitidos [XSLX]");
-					
-					return ERROR ;
-		  	}
-	        catch (Exception e) 
-	        {
-	            	            
-	            logger.error("Exception", e);
-				
-				return ERROR ;
-	        }
-		  finally
-		  {
-			  try
-			  {
-				  if (fis != null)
-				  {
-					  fis.close();
-				  }
-			  }
-			  catch(IOException e)
-			{
-					logger.error("Exception when closing reader object", e);
-			}
-		  }
-	
-	}
-	
-	/*
-		http://stackoverflow.com/questions/11310016/why-does-the-error-file-too-large-is-not-being-showed-correctly-in-the-jsp
-	 */
-	public void validate()
-	{
-		
-	    Collection<?> tmp = getActionErrors();
-
-	    for (Object o : tmp) 
-	    {
-	        if (o.toString().contains("the request was rejected because its size")) 
-	        {
-	                addFieldError("fichero","El tamaño del fichero excede el permitido (2MB)");
-	                break;
-	        }
-	    }
-	}
 	
 }
