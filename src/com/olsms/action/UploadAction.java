@@ -221,7 +221,8 @@ public class UploadAction extends ActionSupport
 	                	ScheduleC2A scheduleC2A = record.getScheduleC2A();
 	                	
 	                	service.loadScheduleC2A(scheduleC2A);
-
+	                	
+	                	
 	                	
 	                }
 	                catch(Exception e)
@@ -242,6 +243,7 @@ public class UploadAction extends ActionSupport
 	            
 	            if (this.reports != null && reports.size() > 0)
 	            {
+	            	
 	            	if (sheet.getLastRowNum() + 1 == this.reports.size())
 	            	{
 	            		 this.reports = null;
@@ -250,8 +252,9 @@ public class UploadAction extends ActionSupport
 	            	}
 	            	else
 	            	{
-	            		
+	            		addFieldError("fichero","Algunos registros insertado [DATOS NO VALIDOS]");
 	            	}
+	            	
 	            	
 	            	return ERROR;
 	            }

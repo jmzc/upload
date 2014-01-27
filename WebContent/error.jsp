@@ -41,7 +41,15 @@
       </c:otherwise>
 </c:choose>
       
- 
+<c:choose>
+      <c:when test="${empty reports}">
+  		<c:set var="mode" value="1" />
+	 </c:when>
+      <c:otherwise>
+		 <c:set var="mode" value="2" />
+      </c:otherwise>
+</c:choose>
+      
  
 
 <html>
@@ -53,7 +61,14 @@
 
 var message = '<c:out value="${message}"/>';
 
-parent.result(1, message);
+if (message.indexOf("=") >= 0)
+{
+	message = message.split("=")[1];	
+}	
+
+var mode = '<c:out value="${mode}"/>';
+
+parent.result(mode, message);
 
 </script>
 </head>

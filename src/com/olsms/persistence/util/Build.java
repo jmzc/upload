@@ -55,7 +55,7 @@ public class Build
 	{
 		
 				
-		String value = this.format(cell);
+		String value = format(cell);
 		logger.info("Adding [" + cell.getColumnIndex() + "][" + value + "]");
 
 		
@@ -83,22 +83,11 @@ public class Build
 	}
 	
 	
-	private String format(Cell cell)
+	private static String format(Cell cell)
 	{
 		
 		return formatter.formatCellValue(cell);
-		
-		/*
-		switch (cell.getCellType()) 
-		{
-        case Cell.CELL_TYPE_STRING:
-            r = cell.getRichStringCellValue().getString();
-            break;
-        case Cell.CELL_TYPE_NUMERIC:
-        	r = NumberFormat.getInstance().format(cell.getNumericCellValue());
-        	break;	
-		}
-		*/	
+	
 	
 	}
 	

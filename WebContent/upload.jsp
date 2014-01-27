@@ -17,9 +17,6 @@ function cleaner()
 	$('#message').html("");
 	
 	
-	// TODO
-		
-
 }
 
 
@@ -30,12 +27,16 @@ $(function()
 	var frame = $('#upload_target');
 
 	frame.load(function() 
-	{ 
+	{
 		
-		if (this.contentWindow.document.body.offsetHeight > 0)
-	 		this.style.height = (this.contentWindow.document.body.offsetHeight + 20) + 'px';
-	 	else
-	 		this.style.height = 0 + 'px';
+		var t = $('#upload_target').contents().find("body").html();
+
+		if (t.indexOf("table") >= 0 || t.indexOf("TABLE") >= 0)
+		 	this.style.height = (this.contentWindow.document.body.offsetHeight + 20) + 'px';
+		 else
+		 	this.style.height = 0 + 'px';
+		
+	
 	
 	});
 
@@ -49,13 +50,20 @@ function result(n,message)
 {
 
 	$('#result').spin(false);
-	if (n == 0)
+	if (n == '0')
 		$('#result').html('<img src="image/ok.png"/>');
-	else
+	else if (n == '1')
 	{
 				
 		// The text() method entity-escapes any HTML that is passed into it.
-		$('#result').html('<img src="image/error.png" title="' + message + '"/>');
+		$('#result').html('<img src="image/error.png"/>');
+		$('#message').html( message);
+	}
+	else if (n == '2')
+	{
+				
+		// The text() method entity-escapes any HTML that is passed into it.
+		$('#result').html('<img src="image/warning.png"/>');
 		$('#message').html( message);
 	}
 		
@@ -110,7 +118,7 @@ function execute()
 	 
 
 	<!-- <iframe id="upload_target" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>  -->
-	<iframe id="upload_target" name="upload_target" allowTransparency="true" marginheight="0" marginwidth="0"  scrolling="yes" frameborder="0" style="width:100%;height:0px;border:0px solid #000;"></iframe>               
+	<iframe id="upload_target" name="upload_target"  marginheight="0" marginwidth="0"  scrolling="yes" frameborder="0" style="width:100%;height:0px;border:0px solid #000;"></iframe>               
 </div> 
 
 
