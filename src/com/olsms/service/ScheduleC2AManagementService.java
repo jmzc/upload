@@ -7,6 +7,8 @@
  *********************************************************************/
 package com.olsms.service;
 
+import java.util.List;
+
 import com.olsms.persistence.ScheduleC2A;
 
 
@@ -17,7 +19,7 @@ import com.olsms.persistence.ScheduleC2A;
 public interface ScheduleC2AManagementService 
 {
 
-	public void loadScheduleC2A(ScheduleC2A scheduleC2A);
+	public void loadScheduleC2A(List<ScheduleC2A> l);
 	
 
 }

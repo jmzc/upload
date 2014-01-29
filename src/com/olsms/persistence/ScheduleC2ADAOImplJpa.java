@@ -19,7 +19,7 @@ public class ScheduleC2ADAOImplJpa extends JpaDaoSupport implements ScheduleC2AD
 	
 
 	@Override
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	@Transactional(propagation=Propagation.REQUIRED)
 	public void insertScheduleC2A(ScheduleC2A scheduleC2A) 
 	{
 		

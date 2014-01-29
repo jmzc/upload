@@ -15,6 +15,10 @@ function cleaner()
 	
 	$('#result').html("");
 	$('#message').html("");
+		
+	var frame = $('#upload_target');
+	frame.html("");
+	frame.height(0);
 	
 	
 }
@@ -28,13 +32,24 @@ $(function()
 
 	frame.load(function() 
 	{
-		
+
+		//Given a jQuery object that represents a set of DOM elements
 		var t = $('#upload_target').contents().find("body").html();
 
 		if (t.indexOf("table") >= 0 || t.indexOf("TABLE") >= 0)
-		 	this.style.height = (this.contentWindow.document.body.offsetHeight + 20) + 'px';
-		 else
+		{
+			var h = this.contentWindow.document.body.offsetHeight;
+			if (this.contentWindow.document.body.offsetHeight > 380)
+				h = 400;
+			else
+				h = h + 20;
+			
+		 	this.style.height = h + 'px';
+		}
+		else
+		{
 		 	this.style.height = 0 + 'px';
+		}
 		
 	
 	

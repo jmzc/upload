@@ -77,7 +77,7 @@ parent.result(mode, message);
 <table border="0" width="100%" >
   <thead>
     <tr>
-      <th width="100%" colspan="2">Resultados</th>
+      <th width="100%" height="5px" colspan="2"></th>
      
     </tr>
   </thead>

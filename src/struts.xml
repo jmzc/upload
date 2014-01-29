@@ -5,9 +5,7 @@
 <struts>
     
     <constant name="struts.custom.i18n.resources" value="global" />
-    
-    <!-- <constant name="struts.multipart.maxSize" value="1000000" /> -->
-    
+
     <!-- bytes  -->
     <!-- <constant name="struts.multipart.maxSize" value="1048576" /> -->
     
@@ -25,15 +23,14 @@
 	  -->
 		
         <interceptor-ref name="fileUpload">
-            <!-- <param name="maximumSize">1048576</param> --> 
+            <param name="maximumSize">1048576</param>
             
             <!--  text/plain -->
             <!-- image/jpeg,image/gif -->
-             <param name="allowedTypes">text/plain,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</param>
+             <param name="allowedTypes">application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</param>
         </interceptor-ref> 
         
         <interceptor-ref name="basicStack"/>
-      	<interceptor-ref name="validation"/>
         <interceptor-ref name="workflow"/>
 
          

@@ -7,6 +7,8 @@
  *********************************************************************/
 package com.olsms.service;
 
+import java.util.List;
+
 import com.olsms.persistence.ScheduleC2A;
 import com.olsms.persistence.ScheduleC2ADAO;
 
@@ -32,10 +34,15 @@ public class ScheduleC2AManagementServiceImpl implements ScheduleC2AManagementSe
 		this.scheduleC2ADAO = scheduleC2ADAO;
 	}
 	
-	public void loadScheduleC2A(ScheduleC2A scheduleC2A)
+	public void loadScheduleC2A(List<ScheduleC2A> l)
 	{
-		
-		scheduleC2ADAO.insertScheduleC2A(scheduleC2A);
+		if (l != null)
+		{
+			for (ScheduleC2A scheduleC2A: l)
+			{
+				this.scheduleC2ADAO.insertScheduleC2A(scheduleC2A);
+			}
+		}
 	}
 
 	
