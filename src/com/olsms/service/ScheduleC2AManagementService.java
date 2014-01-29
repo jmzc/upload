@@ -21,5 +21,7 @@ public interface ScheduleC2AManagementService
 
 	public void loadScheduleC2A(List<ScheduleC2A> l);
 	
+	public String getRoutingLabel(String alias);
+	
 
 }

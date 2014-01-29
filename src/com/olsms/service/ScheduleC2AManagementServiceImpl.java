@@ -12,9 +12,6 @@ import java.util.List;
 import com.olsms.persistence.ScheduleC2A;
 import com.olsms.persistence.ScheduleC2ADAO;
 
-
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class ScheduleC2AManagementServiceImpl.
  */
@@ -43,6 +40,23 @@ public class ScheduleC2AManagementServiceImpl implements ScheduleC2AManagementSe
 				this.scheduleC2ADAO.insertScheduleC2A(scheduleC2A);
 			}
 		}
+	}
+	
+	public String getRoutingLabel(String alias)
+	{
+		try
+		{
+			if ( alias == null)
+				return null;
+			else
+				return this.scheduleC2ADAO.findRoutingLabelByAlias(alias);
+		}
+		catch(Exception e)
+		{
+			
+			return null;
+		}
+
 	}
 
 	

@@ -214,6 +214,7 @@ public class UploadAction extends ActionSupport
 	
 	
 	private static final int COLUMN_NUMBER = 11;
+	private static final int ROW_NUMBER = 500;
 	private static final int HEADER_SIZE = 20;
 	
 	private void xsl(File f)
@@ -239,9 +240,13 @@ public class UploadAction extends ActionSupport
 		            	throw new RowException("Fichero vacio");
 		            
 		         		            
-		          
+		            //0 .. 10, 11, 12
 		            if (header.getLastCellNum() < COLUMN_NUMBER )
-	                	throw new RowException("Número de columnas incorrecto");
+	                	throw new RowException("Número de columnas inferior al mínimo permitido: " + COLUMN_NUMBER);
+		            
+		            // 0 ... 150
+		            if (sheet.getLastRowNum() > ROW_NUMBER)
+		            	throw new RowException("Número de filas supera el máximo permitido: "+ ROW_NUMBER);
 		            
 		            
 		            // CABECERAS		            
@@ -502,8 +507,14 @@ public class UploadAction extends ActionSupport
 			          	
 				        // CAMPAIGN_LABEL
 				        case 0: 
-				        	//TODO Validar campaña
-				        	this.scheduleC2A.setCampaignLabel(value); 
+	
+				        	String label = service.getRoutingLabel(value);
+				        	if (label == null)
+				        		throw new CellException(header.get(cell.getColumnIndex()) +  " no válido");
+				        	
+				        	
+				        	this.scheduleC2A.setCampaignLabel(label); 
+				
 				        	break;
 				        	
 				        // CLIENT_PHONE

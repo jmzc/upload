@@ -16,6 +16,8 @@ public interface ScheduleC2ADAO
 
 	
 	public void insertScheduleC2A(ScheduleC2A scheduleC2A);
+	
+	public String findRoutingLabelByAlias(String alias);
 
 	
 }
