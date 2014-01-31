@@ -41,27 +41,7 @@ public class ScheduleC2AManagementServiceImpl implements ScheduleC2AManagementSe
 			}
 		}
 	}
-	
-	public String getRoutingLabel(String alias)
-	{
-		try
-		{
-			if ( alias == null)
-				return null;
-			else
-				return this.scheduleC2ADAO.findRoutingLabelByAlias(alias);
-		}
-		catch(Exception e)
-		{
-			
-			return null;
-		}
 
-	}
-
-	
-	
-	
 	
 
 }

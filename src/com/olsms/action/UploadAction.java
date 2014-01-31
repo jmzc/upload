@@ -6,12 +6,14 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,9 +28,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.olsms.action.exception.CellException;
 import com.olsms.action.exception.RowException;
+import com.olsms.persistence.CampaignC2A;
+import com.olsms.persistence.RoutingC2A;
 import com.olsms.persistence.ScheduleC2A;
 import com.olsms.persistence.ScheduleC2A.ScheduleC2APriority;
 import com.olsms.persistence.ScheduleC2A.ScheduleC2AState;
+import com.olsms.persistence.WorkPlaceC2A;
+import com.olsms.service.CampaignManagementService;
 import com.olsms.service.ScheduleC2AManagementService;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -61,7 +67,9 @@ public class UploadAction extends ActionSupport
 	// 
     static ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"applicationContext.xml"});
 	
-	static ScheduleC2AManagementService service = (ScheduleC2AManagementService)context.getBean("scheduleC2AManagementService");
+	static ScheduleC2AManagementService scheduleC2AService = (ScheduleC2AManagementService)context.getBean("scheduleC2AManagementService");
+	
+	static CampaignManagementService campaignC2AService = (CampaignManagementService)context.getBean("campaignManagementService");
 	
 	private static Logger logger = Logger.getLogger(UploadAction.class.getName());
 	/**
@@ -179,12 +187,12 @@ public class UploadAction extends ActionSupport
 				  // PERSIST
 				try
 				{
-					service.loadScheduleC2A(l);
+					scheduleC2AService.loadScheduleC2A(l);
 				}
 				catch(Exception e)
 				{
 					logger.error("[EXCEPTION", e);
-					this.addActionError("No pudo realizarse la carga de datos [DATOS NO VALIDOS]");
+					this.addActionError(this.getText("action.upload.error.general"));
 					
 					return ERROR;
 				}
@@ -237,16 +245,22 @@ public class UploadAction extends ActionSupport
 	            	
 	            	Row header = sheet.getRow(0);
 		            if (header == null )
-		            	throw new RowException("Fichero vacio");
+		            	throw new RowException(this.getText("action.upload.error.file.empty"));
 		            
 		         		            
 		            //0 .. 10, 11, 12
 		            if (header.getLastCellNum() < COLUMN_NUMBER )
-	                	throw new RowException("Número de columnas inferior al mínimo permitido: " + COLUMN_NUMBER);
+		            {
+		            	List<String> l = Arrays.asList(String.valueOf(COLUMN_NUMBER));
+		            	throw new RowException(this.getText("action.upload.error.file.column.number",l));
+		            }
 		            
 		            // 0 ... 150
 		            if (sheet.getLastRowNum() > ROW_NUMBER)
-		            	throw new RowException("Número de filas supera el máximo permitido: "+ ROW_NUMBER);
+		            {
+		            	List<String> l = Arrays.asList(String.valueOf(ROW_NUMBER));
+		            	throw new RowException(this.getText("action.upload.error.file.row.number",l));
+		            }
 		            
 		            
 		            // CABECERAS		            
@@ -325,8 +339,7 @@ public class UploadAction extends ActionSupport
 		  	{
 		  		if (e.getCause() instanceof org.apache.poi.openxml4j.exceptions.InvalidFormatException)
 		  		{	
-		  			// TODO Leer texto de fichero
-		  			addFieldError("fichero","Formato no soportado. Formatos admitidos [XSLX]");
+		  			addFieldError("fichero",this.getText("struts.messages.error.content.type.not.allowed"));
 		  		}
 					
 					
@@ -335,6 +348,7 @@ public class UploadAction extends ActionSupport
 	        {
 	            	            
 	            logger.error("Exception", e);
+	            this.addActionError(this.getText("action.upload.error.general"));
 				
 				
 	        }
@@ -366,8 +380,8 @@ public class UploadAction extends ActionSupport
 			
 			if (this.reports != null && reports.size() > 0)
 		    {
-				// TODO Leer texto de fichero
-				addFieldError("fichero","No pudo realizarse la carga de datos [DATOS NO VALIDOS]");
+
+				addFieldError("fichero",this.getText("action.upload.error.general"));
 		        	
 		    }
 	    	
@@ -384,8 +398,8 @@ public class UploadAction extends ActionSupport
 		    {
 		        if (o.toString().contains("the request was rejected because its size")) 
 		        {
-		        		// TODO Leer texto de fichero
-		                addFieldError("fichero","El tamaño del fichero excede del permitido (1MB)");
+
+		                addFieldError("fichero",getText("action.upload.error.file.size"));
 		                break;
 		        }
 		    }
@@ -480,6 +494,8 @@ public class UploadAction extends ActionSupport
 
 		ScheduleC2A scheduleC2A = new ScheduleC2A();	
 		
+		String alias = null;
+		
 		public Builder()
 		{
 			this.scheduleC2A.setCreationDate(new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()));
@@ -492,36 +508,47 @@ public class UploadAction extends ActionSupport
 			return this.scheduleC2A;
 			
 		}
+		private CampaignC2A getCampaignC2A(String alias)
+		{
+			try
+			{
+				
+				return campaignC2AService.findCampaignByAlias(alias);
+			
+			
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				return null;
+			}
+			
+		}	
 		public void build(Cell cell) throws CellException
 		{
 				
 						
-	
+				
+					
 				String value = format(cell);
 							
 				logger.info("[" + cell.getColumnIndex() + "][" + value + "]");
 					
+					
+					List<String> l = Arrays.asList(header.get(cell.getColumnIndex()));
+				
+				
 					// MAP
 			        switch (cell.getColumnIndex()) 
 			        {
 			          	
-				        // CAMPAIGN_LABEL
-				        case 0: 
-	
-				        	String label = service.getRoutingLabel(value);
-				        	if (label == null)
-				        		throw new CellException(header.get(cell.getColumnIndex()) +  " no válido");
-				        	
-				        	
-				        	this.scheduleC2A.setCampaignLabel(label); 
-				
-				        	break;
-				        	
+				        
 				        // CLIENT_PHONE
 				        case 1: 
 				        	
 				        	if ( value == null || value.length() != 9)
-				        		throw new CellException(header.get(cell.getColumnIndex()) +  " no válido");
+				        		throw new CellException(getText("action.upload.error.field.client.phone",l));
+					        	
 				        	this.scheduleC2A.setClientPhone(value); 
 				        	break;
 				        	
@@ -529,21 +556,22 @@ public class UploadAction extends ActionSupport
 				        case 2: 
 				        	
 				        	if ( value != null && value.length() > 100)
-				        		throw new CellException(header.get(cell.getColumnIndex()) +  " supera tamaño permitido");
+				        		throw new CellException(getText("action.upload.error.field.client.name",l));
+				        	
 				        	this.scheduleC2A.setClientName(value); 
 				        	break;
 				        	
 				        // CLIENT_SURNAME
 				        case 3: 
 				        	if ( value != null && value.length() > 100)
-				        		throw new CellException(header.get(cell.getColumnIndex()) +  " supera tamaño permitido");
+				        		throw new CellException(getText("action.upload.error.field.client.surname",l));
 				        	this.scheduleC2A.setClientSurname(value); 
 				        	break;
 				        
 				        // CLIENT_DNI
 				        case 4: 
 				        	if ( value != null && value.length() > 20)
-				        		throw new CellException(header.get(cell.getColumnIndex()) +  " supera tamaño permitido");
+				        		throw new CellException(getText("action.upload.error.field.client.dni",l));
 				        	
 				        	this.scheduleC2A.setClientDni(value); 
 				        	break;
@@ -551,7 +579,7 @@ public class UploadAction extends ActionSupport
 				         // CLIENT_PHONE_ACT
 				        case 5: 
 				        	if ( value == null || value.length() != 9)
-				        		throw new CellException(header.get(cell.getColumnIndex()) +  " no válido");
+				        		throw new CellException(getText("action.upload.error.field.client.actuacion",l));
 				        	this.scheduleC2A.setClientPhoneAct(value); 
 				        	break;
 		
@@ -568,7 +596,7 @@ public class UploadAction extends ActionSupport
 				        		}
 				        		catch(Exception e)
 				        		{
-				        			throw new CellException(header.get(cell.getColumnIndex()) +  " no válida [dd/mm/yyyy]");
+				        			throw new CellException(getText("action.upload.error.field.scheduledate",l));				        			
 				        		}
 				        	}
 				        	
@@ -585,17 +613,15 @@ public class UploadAction extends ActionSupport
 				        		}
 					        	catch(Exception e)
 				        		{
-				        			throw new CellException(header.get(cell.getColumnIndex()) +  " no válido [Inmediatamente|NN:NN-NN:NN]");
+					        		throw new CellException(getText("action.upload.error.field.timetable",l));
+
 				        		}
 				        		
 				        	}
 				        	
 				        	break;
 				        	
-				        // WORKPLACE
-				        case 8: 
-				        	//scheduleC2A.setWorkPlace(value); 
-				        	break;
+				       
 				        	
 				       // PRIORITY
 				        case 9: 				        	
@@ -608,7 +634,8 @@ public class UploadAction extends ActionSupport
 				        		}
 				        		catch(Exception e)
 				        		{
-				        			throw new CellException(header.get(cell.getColumnIndex()) + " no válido [ALTA|MEDIA|BAJA]");
+				        			throw new CellException(getText("action.upload.error.field.priority",l));
+				        			
 				        		}
 				        		
 				        		
@@ -618,10 +645,68 @@ public class UploadAction extends ActionSupport
 				       // AGENT_OBSERVATION
 				        case 10: 
 				        	if ( value != null && value.length() > 500)
-				        		throw new CellException(header.get(cell.getColumnIndex()) +  " supera tamaño permitido");
+				        		throw new CellException(getText("action.upload.error.field.agent.observation",l));
+				        	
 				        	this.scheduleC2A.setAgentObservations(value); 
 				        	break;
-			 
+				        
+				       // CAMPAIGN_LABEL
+				        case 0: 
+				        {
+				        	if (value == null)
+				        		throw new CellException(getText("action.upload.error.field.campaign", l));
+				        	
+				        	CampaignC2A campaignC2A = this.getCampaignC2A(value);
+				        	if (campaignC2A == null)
+				        		throw new CellException(getText("action.upload.error.field.campaign", l));
+				        	
+				        	this.alias = value;
+				        	
+				        	this.scheduleC2A.setCampaignLabel(campaignC2A.getRoutingLabel()); 
+	
+				        }	
+				        break;
+				         // WORKPLACE
+				        
+				        case 8:
+				        {
+				        	if (value == null)
+				        		throw new CellException(getText("action.upload.error.field.workplace", l));
+				        	
+				        	
+				        	
+				        	CampaignC2A campaignC2A = this.getCampaignC2A(this.alias);
+				        	if (campaignC2A == null)
+				        		throw new CellException(getText("action.upload.error.field.campaign", l));
+				        	
+				        	Set<RoutingC2A> s = campaignC2A.getRouting();
+				        	
+				        	
+				        	for (RoutingC2A routingC2A: s)
+				        	{
+				        		WorkPlaceC2A workplaceC2A = routingC2A.getWorkPlace();
+
+				        		if (value.equalsIgnoreCase(workplaceC2A.getName()))
+				        		{
+				        			
+						        	this.scheduleC2A.setWorkPlace(workplaceC2A);
+						        	break;
+				        		}
+
+				        		
+				        	}
+				        	
+				        	if (this.scheduleC2A.getWorkPlace() == null)
+				        		throw new CellException(getText("action.upload.error.field.workplace", l));
+				        	
+				        	
+				
+				        	
+				        	
+				        }
+				        break;
+				       
+				        	
 			        }
 
 			      

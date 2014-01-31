@@ -17,6 +17,11 @@ body
 	padding: 10px;
 }
 
+#upload_target
+{
+	margin: 10px 0px 0px 0px;
+}
+
 .submit-container
 {
 

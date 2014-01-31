@@ -42,7 +42,15 @@
 	</bean>
 	 
 	<bean id="scheduleC2AManagementService" class="com.olsms.service.ScheduleC2AManagementServiceImpl">
-    	<property name="scheduleC2ADAO" ref="scheduleC2ADAO"/>
+    	<property name="scheduleC2ADAO" ref="scheduleC2ADAO"/>    	
+    </bean>
+    
+    <bean id="campaignDAO" class="com.olsms.persistence.CampaignDAOImplJpa">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	 
+	<bean id="campaignManagementService" class="com.olsms.service.CampaignManagementServiceImpl">
+    	<property name="campaignDAO" ref="campaignDAO"/>
     </bean>
 
 </beans>

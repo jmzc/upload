@@ -1,5 +1,5 @@
 /**********************************************************************
- * ScheduleC2AManagementService.java, 10-dic-2013
+ * CampaignManagementService.java, 16-oct-2013
  * OnLineSMS
  * Copyright (c) 2007-2013, Prosodie Iberica All rights reserved.
  * 
@@ -7,20 +7,28 @@
  *********************************************************************/
 package com.olsms.service;
 
-import java.util.List;
+import com.olsms.persistence.CampaignC2A;
 
-import com.olsms.persistence.ScheduleC2A;
 
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface ScheduleC2AManagementService.
+ * The Interface CampaignManagementService.
  */
-public interface ScheduleC2AManagementService 
+public interface CampaignManagementService 
 {
-
-	public void loadScheduleC2A(List<ScheduleC2A> l);
 	
-		
+	
+
+
+	/**
+	 * Find campaign by alias.
+	 *
+	 * @param alias the alias
+	 * @return the campaign c2 a
+	 */
+	public CampaignC2A findCampaignByAlias(String alias);
+
+	
 
 }

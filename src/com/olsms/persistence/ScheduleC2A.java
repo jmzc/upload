@@ -18,9 +18,11 @@ import java.util.Date;
 //import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang.StringUtils;
 //import javax.persistence.OneToMany;
@@ -156,25 +158,11 @@ public class ScheduleC2A
 	private String idu;
 
 	/** The work place. */
-	/*
-	 * @ManyToOne(fetch = FetchType.LAZY) private WorkPlaceC2A workPlace;
-	 */
-	@Column(name = "workplace_id")
-	private Long workPlace;
 
-	/** The call. */
-	/*
-	 * @OneToOne(fetch = FetchType.LAZY, optional = false)
-	 * 
-	 * @LazyToOne(LazyToOneOption.NO_PROXY)
-	 */
-	@Column(name = "call_id")
-	private Long call;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private WorkPlaceC2A workPlace;
 
-	/** The calls. */
-	// @OneToMany(mappedBy= "schedule", fetch = FetchType.LAZY, cascade =
-	// CascadeType.ALL)
-	// private Set<CallC2A> calls;
+
 
 	/** The revise observations. */
 	private String reviseObservations;
@@ -256,7 +244,7 @@ public class ScheduleC2A
 	 * @param persistence
 	 *            the persistence
 	 */
-	public ScheduleC2A(Long id, ScheduleC2AState state, Timestamp creationDate, String origin, String campaignLabel, String clientPhone, String clientPhoneAct, String clientName, String clientSurname, String clientDni, String timeTable, String clientObservations, String urlHost, String agentObservations, String priority, String codifications, String loginAgent, String idu, Long workPlace, Long call, String reviseObservations, String initialSessionId, Timestamp scheduleDate, ScheduleC2APersistence persistence)
+	public ScheduleC2A(Long id, ScheduleC2AState state, Timestamp creationDate, String origin, String campaignLabel, String clientPhone, String clientPhoneAct, String clientName, String clientSurname, String clientDni, String timeTable, String clientObservations, String urlHost, String agentObservations, String priority, String codifications, String loginAgent, String idu, WorkPlaceC2A workPlace, Long call, String reviseObservations, String initialSessionId, Timestamp scheduleDate, ScheduleC2APersistence persistence)
 	{
 
 		super();
@@ -279,7 +267,6 @@ public class ScheduleC2A
 		this.setLoginAgent(loginAgent);
 		this.setIdu(idu);
 		this.setWorkPlace(workPlace);
-		this.setCall(call);
 		this.setReviseObservations(reviseObservations);
 		this.setInitialSessionId(initialSessionId);
 		this.setScheduleDate(scheduleDate);
@@ -336,7 +323,7 @@ public class ScheduleC2A
 	 * @param persistence
 	 *            the persistence
 	 */
-	public ScheduleC2A(ScheduleC2AState state, Timestamp creationDate, String origin, String campaignLabel, String clientPhone, String clientPhoneAct, String clientName, String clientSurname, String clientDni, String timeTable, String clientObservations, String urlHost, String agentObservations, String priority, String codifications, String loginAgent, String idu, Long workPlace, Long call, String reviseObservations, String initialSessionId, Timestamp scheduleDate, ScheduleC2APersistence persistence)
+	public ScheduleC2A(ScheduleC2AState state, Timestamp creationDate, String origin, String campaignLabel, String clientPhone, String clientPhoneAct, String clientName, String clientSurname, String clientDni, String timeTable, String clientObservations, String urlHost, String agentObservations, String priority, String codifications, String loginAgent, String idu, WorkPlaceC2A workPlace, String reviseObservations, String initialSessionId, Timestamp scheduleDate, ScheduleC2APersistence persistence)
 	{
 
 		super();
@@ -359,7 +346,6 @@ public class ScheduleC2A
 		this.setLoginAgent(loginAgent);
 		this.setIdu(idu);
 		this.setWorkPlace(workPlace);
-		this.setCall(call);
 		this.setReviseObservations(reviseObservations);
 		this.setInitialSessionId(initialSessionId);
 		this.setScheduleDate(scheduleDate);
@@ -406,7 +392,7 @@ public class ScheduleC2A
 	 * @param initialSessionId
 	 *            the initial session id
 	 */
-	public ScheduleC2A(ScheduleC2AState state, Timestamp creationDate, String origin, String campaignLabel, String clientPhone, String clientName, String clientSurname, String clientDni, String timeTable, String clientObservations, String urlHost, String agentObservations, String codifications, String loginAgent, String idu, Long workPlace, String reviseObservations, String initialSessionId)
+	public ScheduleC2A(ScheduleC2AState state, Timestamp creationDate, String origin, String campaignLabel, String clientPhone, String clientName, String clientSurname, String clientDni, String timeTable, String clientObservations, String urlHost, String agentObservations, String codifications, String loginAgent, String idu, WorkPlaceC2A workPlace, String reviseObservations, String initialSessionId)
 	{
 
 		super();
@@ -815,58 +801,17 @@ public class ScheduleC2A
 		this.idu = idu;
 	}
 
-	public Long getWorkPlace()
+	public WorkPlaceC2A getWorkPlace()
 	{
 		return workPlace;
 	}
 
-	public void setWorkPlace(Long workPlace)
+	public void setWorkPlace(WorkPlaceC2A workPlace)
 	{
 		this.workPlace = workPlace;
 	}
 
-	/**
-	 * Gets the calls.
-	 * 
-	 * @return the calls
-	 */
-	// public Set<CallC2A> getCalls() {
-	// return calls;
-	// }
-
-	/**
-	 * Sets the calls.
-	 * 
-	 * @param calls
-	 *            the new calls
-	 */
-	// public void setCalls(Set<CallC2A> calls) {
-	// this.calls = calls;
-	// }
-
-	/**
-	 * Adds the call.
-	 * 
-	 * @param call
-	 *            the call
-	 */
-	// public void addCall(CallC2A call){
-	// if(this.calls == null){
-	// calls = new HashSet<CallC2A>();
-	// }
-	// calls.add(call);
-	// }
-
-	public Long getCall()
-	{
-		return call;
-	}
-
-	public void setCall(Long call)
-	{
-		this.call = call;
-	}
-
+	
 	/**
 	 * Gets the revise observations.
 	 * 
