@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+
+
 
 import org.springframework.orm.jpa.support.JpaDaoSupport;
 import org.springframework.transaction.annotation.Propagation;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
  * The Class CampaignDAOImplJpa.
  */
 
+@Transactional(propagation=Propagation.MANDATORY)
 public class CampaignDAOImplJpa extends JpaDaoSupport implements CampaignDAO
 {
 
@@ -46,10 +51,57 @@ public class CampaignDAOImplJpa extends JpaDaoSupport implements CampaignDAO
 		if (!results.isEmpty())
 		{
 			result = results.get(0);
+			
 
 		}
 
 		return result;
 	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.prosodie.c2a.campaign.persistence.CampaignDAO#findCampaignByAlias(
+	 * java.lang.String)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED)
+	public CampaignC2A findCampaignByAlias2(String alias)
+	{
+		CampaignC2A campaignC2A = null;
+	
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("alias", alias);
+		
+		List<CampaignC2A> l = getJpaTemplate().findByNamedParams("SELECT c " + "FROM CampaignC2A c WHERE lower(c.alias) LIKE lower(:alias) ORDER BY c.alias", params);
+
+		if (!l.isEmpty())
+		{
+			campaignC2A = l.get(0);
+			if (campaignC2A != null)
+			{
+				Set<RoutingC2A> s = campaignC2A.getRouting();
+
+	        	for (RoutingC2A routingC2A: s)
+	        	{
+	        		if (routingC2A != null && routingC2A.getWorkPlace() != null)
+	        			routingC2A.getWorkPlace().getName();
+	        			        			        	
+
+	        	}
+
+			}
+
+		}
+		
+
+		return campaignC2A;
+	}
+	
+	
+	
 
 }

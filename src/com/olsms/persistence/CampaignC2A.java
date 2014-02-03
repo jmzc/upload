@@ -52,9 +52,9 @@ public class CampaignC2A
 	@Column(length = 10)
 	private String routingLabel;
 
-	// @OneToMany(mappedBy = "campaign", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
 	/** The routing. */
-	@OneToMany(mappedBy = "campaign", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "campaign", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<RoutingC2A> routing;
 
 	/**

@@ -28,6 +28,14 @@ public interface CampaignManagementService
 	 * @return the campaign c2 a
 	 */
 	public CampaignC2A findCampaignByAlias(String alias);
+	
+	/**
+	 * Find campaign by alias.
+	 *
+	 * @param alias the alias
+	 * @return the campaign c2 a
+	 */
+	public CampaignC2A findCampaignByAlias2(String alias);
 
 	
 

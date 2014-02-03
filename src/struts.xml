@@ -16,7 +16,9 @@
     <action name="doupload" class="com.olsms.action.UploadAction">
 
 		  
-		  
+		
+		
+		
 		<!-- The file upload interceptor also does the validation and adds errors, 
 			these error messages are stored in the struts-messsages.properties file. 
 			The values of the messages can be overridden by providing the text for the following keys:
@@ -35,6 +37,8 @@
         
         <interceptor-ref name="basicStack"/>
         <interceptor-ref name="workflow"/>
+      
+      
 
          
 

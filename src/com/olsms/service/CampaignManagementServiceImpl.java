@@ -31,6 +31,19 @@ public class CampaignManagementServiceImpl implements CampaignManagementService
 
 		return campaignDAO.findCampaignByAlias(alias);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see es.prosodie.c2a.campaign.service.CampaignManagementService#
+	 * findCampaignByAlias(java.lang.String)
+	 */
+	public CampaignC2A findCampaignByAlias2(String alias)
+	{
+
+		return campaignDAO.findCampaignByAlias2(alias);
+	}
+	
 
 	/**
 	 * Gets the campaign dao.

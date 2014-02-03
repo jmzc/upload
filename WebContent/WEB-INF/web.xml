@@ -19,22 +19,26 @@
    <listener> 
 	  <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class> 
 	</listener> 
+	
+	<context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext.xml</param-value>
+    </context-param>
     
-
- <!-- Include this if you are using Hibernate -->
+     <!-- Include this if you are using Hibernate -->
     <filter>
-        <filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
-        <filter-class>
-            org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
-        </filter-class>
+        <filter-name>oemiv</filter-name>
+        <filter-class> org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
+        </filter-class>   
     </filter>
-
+    
+    
     <filter-mapping>
-        <filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
+        <filter-name>oemiv</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     
-  <filter>
+     <filter>
     	<filter-name>struts2</filter-name>
     	<filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
   </filter>
@@ -42,12 +46,14 @@
     	<filter-name>struts2</filter-name>
     	<url-pattern>/*</url-pattern>
   </filter-mapping>
+
+
+
+    
+ 
   
   
-   <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:applicationContext.xml</param-value>
-    </context-param>
+   
     
   <!-- 
   <jsp-config>

@@ -187,7 +187,10 @@ public class UploadAction extends ActionSupport
 				  // PERSIST
 				try
 				{
+					logger.info("Inicio de insercción en BBDD ....");
 					scheduleC2AService.loadScheduleC2A(l);
+					logger.info("Fin de insercción en BBDD");
+					
 				}
 				catch(Exception e)
 				{
@@ -231,6 +234,8 @@ public class UploadAction extends ActionSupport
 		FileInputStream fis = null;
 		  try
 	       {
+				logger.info("Inicio proceso fichero ....");
+				
 	            fis = new FileInputStream(f);
 	 
 	            //Create Workbook instance holding reference to .xlsx fis
@@ -301,6 +306,7 @@ public class UploadAction extends ActionSupport
 			                try
 			                {
 			                	Builder builder = new Builder();
+			                	logger.info("====================");
 			                	for(int n=0; n<row.getLastCellNum(); n++)
 				                {
 			                		Cell cell = row.getCell(n, Row.CREATE_NULL_AS_BLANK);
@@ -308,6 +314,7 @@ public class UploadAction extends ActionSupport
 				                    builder.build(cell);
 			
 				                }
+			                	logger.info("====================");
 				                
 				                this.addScheduleC2A(builder.get());
 			                	
@@ -366,6 +373,9 @@ public class UploadAction extends ActionSupport
 					logger.error("Exception when closing reader object", e);
 			}
 		  }
+		  
+		  
+		  logger.info("Fin proceso fichero");
 	
 	}
 	
@@ -508,12 +518,25 @@ public class UploadAction extends ActionSupport
 			return this.scheduleC2A;
 			
 		}
+		
+		
+		// TODO: Cache deberia ser implementada por Hibernate Cache L2
+		// TODO: Usar metodo principal , no el secundario empleado para problemas con LAZY-LOADING
+		private Map<String,CampaignC2A> cache = null;
 		private CampaignC2A getCampaignC2A(String alias)
 		{
 			try
 			{
+				if (cache == null)
+					cache = new HashMap<String,CampaignC2A>();
 				
-				return campaignC2AService.findCampaignByAlias(alias);
+				if (!cache.containsKey(alias))
+				{
+					
+					cache.put(alias, campaignC2AService.findCampaignByAlias2(alias));
+				}
+				
+				return cache.get(alias);
 			
 			
 			}
@@ -659,6 +682,7 @@ public class UploadAction extends ActionSupport
 				        	CampaignC2A campaignC2A = this.getCampaignC2A(value);
 				        	if (campaignC2A == null)
 				        		throw new CellException(getText("action.upload.error.field.campaign", l));
+				        
 				        	
 				        	this.alias = value;
 				        	
@@ -670,6 +694,7 @@ public class UploadAction extends ActionSupport
 				        
 				        case 8:
 				        {
+				        	
 				        	if (value == null)
 				        		throw new CellException(getText("action.upload.error.field.workplace", l));
 				        	
@@ -699,8 +724,6 @@ public class UploadAction extends ActionSupport
 				        	if (this.scheduleC2A.getWorkPlace() == null)
 				        		throw new CellException(getText("action.upload.error.field.workplace", l));
 				        	
-				        	
-				
 				        	
 				        	
 				        }

@@ -41,9 +41,9 @@ public class RoutingC2A
 	@Column(columnDefinition = "INTEGER DEFAULT '0'")
 	private int workplaceOrder;
 
-	// TODO @ManyToOne(fetch = FetchType.LAZY)
+
 	/** The work place. */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private WorkPlaceC2A workPlace;
 
 	/**
